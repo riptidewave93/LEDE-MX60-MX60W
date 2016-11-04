@@ -32,11 +32,13 @@
 #define HDR_OFF_IMAGELEN	8
 #define HDR_OFF_CHECKSUM	12
 #define HDR_OFF_MAGIC2		32
-#define HDR_OFF_FILLER		36
+#define HDR_OFF_MAGIC3		36
 #define HDR_OFF_STATICHASH	40
 
 struct board_info {
-	uint32_t magic;
+	uint32_t magic1;
+	uint32_t magic2;
+	uint32_t magic3;
 	uint32_t imagelen;
 	unsigned char statichash[20];
 	char *id;
@@ -55,7 +57,9 @@ static const struct board_info boards[] = {
 	{
 		.id		= "mr18",
 		.description	= "Meraki MR18 Access Point",
-		.magic		= 0x8e73ed8a,
+		.magic1		= 0x8e73ed8a,
+		.magic2		= 0x8e73ed8a,
+		.magic3		= 0x00000000,
 		.imagelen	= 0x00800000,
 		.statichash	= {0xda, 0x39, 0xa3, 0xee, 0x5e,
 				   0x6b, 0x4b, 0x0d, 0x32, 0x55,
@@ -64,7 +68,9 @@ static const struct board_info boards[] = {
 	}, {
 		.id		= "mr24",
 		.description	= "Meraki MR24 Access Point",
-		.magic		= 0x8e73ed8a,
+		.magic1		= 0x8e73ed8a,
+		.magic2		= 0x8e73ed8a,
+		.magic3		= 0x00000000,
 		.imagelen	= 0x00800000,
 		.statichash	= {0xff, 0xff, 0xff, 0xff, 0xff,
 				   0xff, 0xff, 0xff, 0xff, 0xff,
@@ -73,12 +79,14 @@ static const struct board_info boards[] = {
 	}, {
 		.id		= "mx60",
 		.description	= "Meraki MX60/MX60W Security Appliance",
-		.magic		= 0x8e73ed8a,
-		.imagelen	= 0x00800000,
-		.statichash	= {0xff, 0xff, 0xff, 0xff, 0xff,
-				   0xff, 0xff, 0xff, 0xff, 0xff,
-				   0xff, 0xff, 0xff, 0xff, 0xff,
-				   0xff, 0xff, 0xff, 0xff, 0xff},
+		.magic1		= 0x8e73ed8a,
+		.magic2		= 0xa1f0beef, /* If set, use custom load addr */
+		.magic3		= 0x00060001, /* This goes along with magic2 */
+		.imagelen	= 0x3fd00000,
+		.statichash	= {0x00, 0x01, 0x00, 0x00, 0x00,
+				   0x3F, 0xFC, 0x00, 0x00, 0x00,
+				   0x04, 0x00, 0x00, 0x00, 0x04,
+				   0x00, 0x00, 0x00, 0x00, 0x00},
 	}, {
 
 		/* terminating entry */
@@ -247,9 +255,9 @@ int main(int argc, char *argv[])
 	fread(kernel, klen, 1, in);
 
 	/* Write magic values and filler */
-	writel(buf, HDR_OFF_MAGIC1, board->magic);
-	writel(buf, HDR_OFF_MAGIC2, board->magic);
-	writel(buf, HDR_OFF_FILLER, 0);
+	writel(buf, HDR_OFF_MAGIC1, board->magic1);
+	writel(buf, HDR_OFF_MAGIC2, board->magic2);
+	writel(buf, HDR_OFF_MAGIC3, board->magic3);
 
 	/* Write header and image length */
 	writel(buf, HDR_OFF_HDRLEN, HDR_LENGTH);
