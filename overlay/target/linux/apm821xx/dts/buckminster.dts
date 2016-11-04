@@ -138,14 +138,14 @@
 	};
 
 	plb {
-		compatible = "ibm,plb4";
+		compatible = "ibm,plb-460ex", "ibm,plb4";
 		#address-cells = <2>;
 		#size-cells = <1>;
 		ranges;
 		clock-frequency = <0>; /* Filled in by U-Boot */
 
 		SDRAM0: sdram {
-			compatible = "ibm,sdram-apm821xx";
+			compatible = "ibm,sdram-460ex", "ibm,sdram-405gp";
 			dcr-reg = <0x010 0x002>;
 		};
 
@@ -175,7 +175,7 @@
 		};
 
 		MAL0: mcmal {
-			compatible = "ibm,mcmal2";
+			compatible = "ibm,mcmal-460ex", "ibm,mcmal2";
 			descriptor-memory = "ocm";
 			dcr-reg = <0x180 0x062>;
 			num-tx-chans = <1>;
@@ -192,6 +192,15 @@
 					/*RX0 COAL*/  0xc 0x2>;
 		};
 
+		AHBDMA: dma@bffd0800 {
+			compatible = "snps,dma-spear1340";
+			reg = <4 0xbffd0800 0x400>;
+			interrupt-parent = <&UIC0>;
+			interrupts = <25 4>;
+			#dma-cells = <3>;
+			/* use autoconfiguration for the dma setup */
+        };
+
 		USBOTG0: usbotg@bff80000 {
 			compatible = "meraki,buckminster-usb";
 			reg = <0x4 0xbff80000 0x10000>;
@@ -206,38 +215,17 @@
 			dr_mode = "host";
 		};
 
-    /* While the PCB has room for a SATA slot, */
-    /* the board is not populated. Thus, SATA  */
-    /* will be left disabled for now.          */
-    /*
-		SATA0: sata@bffd1000 {
-			compatible = "amcc,sata-460ex";
-			reg = <4 0xbffd1000 0x800 4 0xbffd0800 0x400>;
-			dma-channel = <0>;
-			interrupt-parent = <&UIC0>;
-			interrupts = <26 4 25 4>;
-		};
-
-		SATA1: sata@bffd1800 {
-			compatible = "amcc,sata-460ex";
-			reg = <4 0xbffd1800 0x800 4 0xbffd0800 0x400>;
-			dma-channel = <1>;
-			interrupt-parent = <&UIC0>;
-			interrupts = <27 4 25 4>;
-		};
-    */
-    
-		adma {
+		ADMA: adma {
 			compatible = "amcc,apm82181-adma";
 			device_type = "dma";
-			#address-cells = <0x2>;
-			#size-cells = <0x1>;
+			#address-cells = <2>;
+			#size-cells = <1>;
 
 			dma-4channel@1 {
 				compatible = "amcc,apm82181-dma-4channel";
-				cell-index = <0x1>;
+				cell-index = <1>;
 				label = "plb_dma1";
-				interrupt-parent = <0x3>;
+				interrupt-parent = <&UIC0>;
 				interrupts = <0xd 0x4>;
 				pool_size = <0x4000>;
 				dcr-reg = <0x208 0x20f>;
@@ -245,9 +233,9 @@
 
 			dma-4channel@2 {
 				compatible = "amcc,apm82181-dma-4channel";
-				cell-index = <0x2>;
+				cell-index = <2>;
 				label = "plb_dma2";
-				interrupt-parent = <0x3>;
+				interrupt-parent = <&UIC0>;
 				interrupts = <0xe 0x4>;
 				pool_size = <0x4000>;
 				dcr-reg = <0x210 0x217>;
@@ -255,9 +243,9 @@
 
 			dma-4channel@3 {
 				compatible = "amcc,apm82181-dma-4channel";
-				cell-index = <0x3>;
+				cell-index = <3>;
 				label = "plb_dma3";
-				interrupt-parent = <0x3>;
+				interrupt-parent = <&UIC0>;
 				interrupts = <0xf 0x4>;
 				pool_size = <0x4000>;
 				dcr-reg = <0x218 0x21f>;
@@ -265,11 +253,11 @@
 
 			xor@4 {
 				compatible = "amcc,xor";
-				cell-index = <0x4>;
+				cell-index = <4>;
 				label = "xor";
-				interrupt-parent = <0x4>;
+				interrupt-parent = <&UIC1>;
 				interrupts = <0x16 0x4>;
-				reg = <0x4 0x200000 0x224>;
+				reg = <0x00000004 0x00200000 0x00000224>;
 			};
 		};
 
@@ -291,7 +279,7 @@
 				interrupts = <0x6 0x4>;
 				interrupt-parent = <&UIC1>;
 
-				/* Buckminster has 1GB of NAND */
+				/* Buckminster has 1GiB of NAND */
 				ndfc@1,0 {
 					compatible = "ibm,ndfc";
 					reg = <00000003 00000000 00000400>;
@@ -299,7 +287,6 @@
 					bank-settings = <0x80002222>;
 					#address-cells = <1>;
 					#size-cells = <1>;
-					/* 1GB NAND Flash */
 					nand {
 						#address-cells = <1>;
 						#size-cells = <1>;
@@ -307,11 +294,13 @@
 						partition@0 {
 							label = "u-boot";
 							reg = <0x00000000 0x00100000>;
+							read-only;
 						};
 
 						partition@100000 {
 							label = "u-boot-env";
 							reg = <0x00100000 0x00100000>;
+							read-only;
 						};
 
 						partition@200000 {
@@ -415,12 +404,15 @@
 				#address-cells = <1>;
 				#size-cells = <0>;
 
+				/* This does not work on the MX60 */
+				/*
 				sttm@4C {
 					compatible = "adm,adm1032";
 					reg = <0x4c>;
 					interrupt-parent = <0x4>;
 					interrupts = <0x1e 0x8>;
 				};
+				*/
 			};
 
 			IIC1: i2c@ef600800 {
@@ -460,7 +452,9 @@
 				max-frame-size = <9000>;
 				rx-fifo-size = <16384>;
 				tx-fifo-size = <2048>;
+				fifo-entry-size = <10>;
 				phy-mode = "rgmii";
+				phy-handle = <&phy0>;
 				phy-map = <0x00000000>;
 				rgmii-device = <&RGMII0>;
 				rgmii-channel = <0>;
@@ -468,6 +462,23 @@
 				tah-channel = <0>;
 				has-inverted-stacr-oc;
 				has-new-stacr-staopc;
+
+				mdio {
+					#address-cells = <1>;
+					#size-cells = <0>;
+
+					phy0: ethernet-phy@0 {
+						device_type = "ethernet-phy";
+						reg = <0>;
+						qca,ar8327-initvals = <
+							0x0010 0x40000000
+							0x0624 0x007f7f7f
+							0x0004 0x07a00000	/* PAD0_MODE */
+							0x000c 0x01000000	/* PAD6_MODE */
+							0x007c 0x0000007e	/* PORT0_STATUS */
+						>;
+					};
+				};
 			};
 		};
 
@@ -531,5 +542,9 @@
 				0x0 0x0 0x0 0x3 &UIC3 0xe 0x4 /* swizzled int C */
 				0x0 0x0 0x0 0x4 &UIC3 0xf 0x4 /* swizzled int D */>;
 		};
+	};
+
+	chosen {
+			linux,stdout-path = "/plb/opb/serial@ef600400";
 	};
 };

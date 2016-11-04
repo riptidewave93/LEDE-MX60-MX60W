@@ -39,12 +39,12 @@ Flashing
 
   setenv lede_boot run meraki_ubi lede_bootargs\; run lede_load1 meraki_checkpart lede_bootkernel\; run lede_load2 meraki_checkpart meraki_bootlinux
 
-	setenv bootcmd run lede_boot
+  setenv bootcmd run lede_boot
 
   saveenv
   ```
 
-  3. Use the above Booting commands to boot into an initramfs build of OpenWRT using TFTP
+  3. Use the above Booting commands to boot into an initramfs build of LEDE using TFTP
   4. Once booted, find the UBI Volume ID of board-config. This is done with `ubinfo /dev/ubi0 -N board-config`
   5. Cleanup and move around UBI partitions for maximum space. Note that in this example, replace `XX` with the Volume ID for `board-config`:
 
@@ -54,7 +54,7 @@ Flashing
   ubirmvol /dev/ubi0 -N storage
   dd if=/dev/ubi0_XX of=/tmp/board-config.img
   ubirmvol /dev/ubi0 -N board-config
-  ubimkvol /dev/ubi0 -s 24KiB -N board-config
+  ubimkvol /dev/ubi0 -s 126KiB -N board-config
   ubiupdatevol /dev/ubi0_0 /tmp/board-config.img
   ```
 
@@ -69,13 +69,25 @@ Flashing
 
 To Do
 -----
-##### MX60
-* Everything?
+##### MX60/MX60W
+* Dynamic Kernel/FTS/Ramdisk Location (Helps with initramfs image)
+* Front Ethernet LEDs
 
 Working
 -----
 ##### MX60
-* Unknown
+* Ethernet
+* LED's/GPIOs
+* Reset button
+* System Integration
+* Sysupgrade Support
+* Kernel Device Profile
+* Kernel Header Generation
+
+Not Tested
+-----
+##### MX60W
+* WiFi (no device to test with)
 
 Notice
 ------

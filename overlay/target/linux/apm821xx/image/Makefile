@@ -85,17 +85,18 @@ endef
 TARGET_DEVICES += mr24
 
 define Device/mx60
-  DEVICE_TITLE := Cisco Meraki MX60/MX60W
-  DEVICE_PACKAGES := kmod-spi-gpio kmod-ath9k wpad-mini
+  DEVICE_TITLE := Cisco Meraki MX60
+  DEVICE_PACKAGES := kmod-spi-gpio swconfig kmod-usb-ledtrig-usbport \
+	kmod-usb-dwc2 kmod-usb-storage block-mount
   DEVICE_PROFILE := MX60
   DEVICE_DTS := buckminster
   BLOCKSIZE := 63k
   IMAGES := sysupgrade.tar
   DTB_SIZE := 64512
-	KERNEL_SIZE := 1984k
-  IMAGE_SIZE := 8191k
-	KERNEL := kernel-bin | lzma | uImage lzma | MerakiAdd-dtb | MerakiNAND
-  KERNEL_INITRAMFS := copy-file $(KDIR)/vmlinux | lzma | uImage lzma | \
+  KERNEL_SIZE := 2984k
+  IMAGE_SIZE := 1021m
+  KERNEL := kernel-bin | gzip | uImage gzip | MerakiAdd-dtb | MerakiNAND
+  KERNEL_INITRAMFS := copy-file $(KDIR)/vmlinux | gzip | uImage gzip | \
 		      check-size $$(KERNEL_SIZE) | \
 		      MerakiAdd-dtb | pad-to 2047k | MerakiAdd-initramfs | \
 		      MerakiNAND
@@ -103,6 +104,13 @@ define Device/mx60
   UBINIZE_OPTS := -E 5
 endef
 TARGET_DEVICES += mx60
+
+define Device/mx60w
+$(Device/mx60)
+  DEVICE_TITLE := Cisco Meraki MX60W
+  DEVICE_PACKAGES += kmod-ath9k wpad-mini
+endef
+TARGET_DEVICES += mx60w
 
 define Build/create-uImage-dtb
 	# flat_dt target expect FIT image - which WNDR4700's uboot doesn't support

@@ -18,17 +18,16 @@ fi
 
 Msg "Starting Build Process!"
 
-if [ ! -d $clonedir ]; then
+if [ ! -d "$clonedir" ]; then
   firstbuild=1
   Msg "Cloning Repo..."
   git clone https://github.com/lede-project/source $clonedir
   cd $clonedir
-  git reset --hard 8f2c2f94cf91476283ac2becb50f6d05482cd95f
+  git reset --hard 5a37d0601a5431e5c6c721d1ed39a80568b54679
   cd - > /dev/null
 fi
 
-
-if [ $firstbuild = "0" ]; then
+if [ "$firstbuild" -eq "0" ]; then
   Msg "Cleaning Builddir..."
   cd $clonedir
   rm -rf ./bin
@@ -38,16 +37,20 @@ fi
 Msg "Applying overlay..."
 cp -R ./overlay/* $clonedir/
 
-if [ $firstbuild = "1" ]; then
-  Msg "Running first build configurations..."
+if [ "$firstbuild" -eq "1" ]; then
+  Msg "Installing feeds..."
   cd $clonedir
   ./scripts/feeds update -a
   ./scripts/feeds install -a
-  make defconfig
+  if [ -f "../config/diffconfig" ]; then
+  	Msg "Applying and Expanding config..."
+  	cp ../config/diffconfig ./.config
+  	make defconfig
+  fi
   cd - > /dev/null
 fi
 
-if [ $modify -eq 1 ]; then
+if [ "$modify" -eq "1" ]; then
   cd $clonedir
   Msg "Loading Menuconfig"
   make menuconfig -j$cpu_num V=s
