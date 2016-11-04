@@ -37,7 +37,7 @@ Flashing
 
   setenv lede_bootargs setenv bootargs console=ttyS0,\${baudrate} rootfstype=squashfs mtdoops.mtddev=oops
 
-  setenv lede_boot run meraki_ubi lede_bootargs\; run lede_load1 meraki_checkpart meraki_bootkernel\; run lede_load2 meraki_checkpart meraki_bootlinux
+  setenv lede_boot run meraki_ubi lede_bootargs\; run lede_load1 meraki_checkpart lede_bootkernel\; run lede_load2 meraki_checkpart meraki_bootlinux
 
 	setenv bootcmd run lede_boot
 
