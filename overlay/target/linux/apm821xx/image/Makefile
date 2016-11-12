@@ -89,7 +89,7 @@ define Device/mx60
   DEVICE_PACKAGES := kmod-spi-gpio swconfig kmod-usb-ledtrig-usbport \
 	kmod-usb-dwc2 kmod-usb-storage block-mount
   DEVICE_PROFILE := MX60
-  DEVICE_DTS := buckminster
+  DEVICE_DTS := MX60
   BLOCKSIZE := 63k
   IMAGES := sysupgrade.tar
   DTB_SIZE := 64512

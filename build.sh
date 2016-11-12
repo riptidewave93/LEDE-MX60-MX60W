@@ -23,7 +23,18 @@ if [ ! -d "$clonedir" ]; then
   Msg "Cloning Repo..."
   git clone https://github.com/lede-project/source $clonedir
   cd $clonedir
-  git reset --hard 5a37d0601a5431e5c6c721d1ed39a80568b54679
+  git reset --hard fc93494066c43d7cf77219a633c805cc9e984b67
+  cd - > /dev/null
+fi
+
+if [ "$firstbuild" -eq "1" ] && [ -d "./patches" ]; then
+  Msg "Applying Patches..."
+  cd $clonedir
+  for patch in ../patches/*.patch
+  do
+	  Msg "Applying $patch"
+	  git apply $patch
+  done
   cd - > /dev/null
 fi
 
