@@ -80,13 +80,21 @@ static const struct board_info boards[] = {
 		.id		= "mx60",
 		.description	= "Meraki MX60/MX60W Security Appliance",
 		.magic1		= 0x8e73ed8a,
-		.magic2		= 0xa1f0beef, /* If set, use custom load addr */
+		.magic2		= 0xa1f0beef, /* Enables use of load addr in statichash */
 		.magic3		= 0x00060001, /* This goes along with magic2 */
 		.imagelen	= 0x3fd00000,
-		.statichash	= {0x00, 0x01, 0x00, 0x00, 0x00,
-				   0x3F, 0xFC, 0x00, 0x00, 0x00,
-				   0x04, 0x00, 0x00, 0x00, 0x04,
-				   0x00, 0x00, 0x00, 0x00, 0x00},
+		/* The static hash below does the following:
+		 * 1st Row: Kernel Offset addition
+		 * 2nd Row: Ramdisk Offset addition
+		 * 3rd Row: FDT Offset additioon
+		 * 4th Row: ? Unused/Unknown ?
+		 * 5th Row: ? Unused/Unknown ?
+		 */
+		.statichash	= {0x00, 0x01, 0x00, 0x00,
+				   0x00, 0x3F, 0xFC, 0x00,
+				   0x00, 0x00, 0x04, 0x00,
+				   0x00, 0x00, 0x04, 0x00,
+				   0x00, 0x00, 0x00, 0x00},
 	}, {
 
 		/* terminating entry */

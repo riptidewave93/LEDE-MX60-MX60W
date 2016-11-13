@@ -93,6 +93,10 @@ define Device/mx60
   BLOCKSIZE := 63k
   IMAGES := sysupgrade.tar
   DTB_SIZE := 64512
+  # The kernel size will need to match the offset defined in mkmerakifw.c,
+  # otherwise the final image will fail to boot. This is set within the
+  # "static hash" for the MX60 device which is found at
+  # ./tools/firmware-utils/src/mkmerakifw.c, line 87
   KERNEL_SIZE := 2984k
   IMAGE_SIZE := 1021m
   KERNEL := kernel-bin | gzip | uImage gzip | MerakiAdd-dtb | MerakiNAND

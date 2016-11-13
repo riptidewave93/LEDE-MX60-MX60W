@@ -23,8 +23,6 @@ Note that the file will need to be named `buck.bin` and it will need to be hoste
 
 Flashing
 -----
-### Note, this is still being drafted!
-
   1. Boot into U-Boot over UART
   2. Set the new U-Boot settings to boot our images. This will set the proper UBI partition names, disable initramfs loading for the kenel, and keep it for the recovery initramfs image.
 
@@ -71,7 +69,6 @@ To Do
 -----
 ##### MX60/MX60W
 * Dynamic Kernel/FTS/Ramdisk Location (Helps with initramfs image)
-* Front Ethernet LEDs
 
 Working
 -----
