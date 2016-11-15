@@ -49,7 +49,6 @@
 	/* Buckminster has 1GiB of NAND */
 	ndfc@1,0 {
 		status = "okay";
-		/* 32 MiB NAND Flash */
 		nand {
 			#address-cells = <1>;
 			#size-cells = <1>;
@@ -178,6 +177,7 @@
 };
 
 &PCIE0 {
+	/* Leave this enabled as u-boot on the MX60 will disable it for us */
 	status = "okay";
 };
 
