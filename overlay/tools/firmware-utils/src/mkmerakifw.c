@@ -94,9 +94,9 @@ static const struct board_info boards[] = {
 		.magic3		= 0x00060001, /* This goes along with magic2 */
 		.imagelen	= 0x3fd00000,
 		/* The static hash below does the following:
-		 * 1st Row: Kernel Offset addition
-		 * 2nd Row: Ramdisk Offset addition
-		 * 3rd Row: FDT Offset additioon
+		 * 1st Row: Kernel Offset
+		 * 2nd Row: Ramdisk Offset
+		 * 3rd Row: FDT Offset
 		 * 4th Row: ? Unused/Unknown ?
 		 * 5th Row: ? Unused/Unknown ?
 		 */
