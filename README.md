@@ -1,7 +1,7 @@
 # LEDE-MX60
 Bringup for the Cisco Meraki MX60/MX60W on LEDE!
 
-Currently based on commit https://github.com/lede-project/source/commit/8f2c2f94cf91476283ac2becb50f6d05482cd95f
+**NOTE: This repo is NO LONGER MAINTAINED as these changes were merged upstream. Refer to https://github.com/lede-project/source/commit/a72e1692b8b35d61587d75cf1800eef934203cd2 and enjoy the official LEDE nightles!**
 
 Building
 -----
@@ -68,7 +68,7 @@ Flashing
 To Do
 -----
 ##### MX60/MX60W
-* Dynamic Kernel/FTS/Ramdisk Location (Helps with initramfs image)
+* Nothing
 
 Working
 -----
