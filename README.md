@@ -72,7 +72,7 @@ To Do
 
 Working
 -----
-##### MX60
+##### MX60/MX60W
 * Ethernet
 * LED's/GPIOs
 * Reset button
@@ -80,11 +80,6 @@ Working
 * Sysupgrade Support
 * Kernel Device Profile
 * Kernel Header Generation
-
-Not Tested
------
-##### MX60W
-* WiFi (no device to test with)
 
 Notice
 ------
