@@ -60,7 +60,7 @@ Flashing
 
   ```
   ls -alh /tmp/lede-apm821xx-nand-mx60-initramfs-kernel.bin
-  ubimkvol /dev/ubi0 -s 5MiB -N recovery
+  ubimkvol /dev/ubi0 -s 10MiB -N recovery
   ubiupdatevol /dev/ubi0_1 /tmp/lede-apm821xx-nand-mx60-initramfs-kernel.bin
   ```
   7. Once done, you can now load up LuCI at 192.168.1.1, and use the sysupgrade option to flash the full image to the device using the sysupgrade file named `lede-apm821xx-nand-mx60-squashfs-sysupgrade.tar`. From this point on, any future updates/builds can just be flashed through LuCI.
