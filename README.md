@@ -15,11 +15,22 @@ Note that you will need to run a modify on the first compile to select the apm82
 
 Booting
 -----
-The MX60/M60W comes with U-Boot, so you can boot an initramfs image using:
+The MX60/M60W comes with U-Boot, so you can boot an initramfs image.
+
+LEDE 17.01.7, OpenWrt 18.06.2 and OpenWrt-snapshot users will need to use this boot
+
+```
+setenv bootargs console=ttyS0,$baudrate mtdoops.mtddev=oops; tftpboot $meraki_loadaddr buck.bin; bootm $fileaddr
+```
+
+Users compiling images from this repository can use:
+
+
 ```
 setenv serverpath; setenv netloadmethod tftpboot; setenv bootargs console=ttyS0,${baudrate} rootfstype=squashfs mtdoops.mtddev=oops; run meraki_load_net meraki_checkpart meraki_bootlinux
 ```
-Note that the file will need to be named `buck.bin` and it will need to be hosted by a TFTP server at 192.168.1.101/24. You will also need to wire into the WAN port of the device, as the LAN ports are not enabled in U-Boot.
+
+Note that in both cases the file will need to be named `buck.bin` and it will need to be hosted by a TFTP server at 192.168.1.101/24. You will also need to wire into the WAN port of the device, as the LAN ports are not enabled in U-Boot.
 
 Flashing
 -----
@@ -33,11 +44,13 @@ Flashing
 
   setenv lede_bootkernel bootm \${meraki_loadaddr_kernel} - \${meraki_loadaddr_fdt}
 
+  setenv owrt_bootkernel bootm \${meraki_loadaddr}
+
   setenv lede_bootargs setenv bootargs console=ttyS0,\${baudrate} rootfstype=squashfs mtdoops.mtddev=oops
 
-  setenv lede_boot run meraki_ubi lede_bootargs\; run lede_load1 meraki_checkpart lede_bootkernel\; run lede_load2 meraki_checkpart meraki_bootlinux
+  setenv owrt_boot run meraki_ubi lede_bootargs\; run lede_load1 meraki_checkpart lede_bootkernel\; run lede_load2 owrt_bootkernel
 
-  setenv bootcmd run lede_boot
+  setenv bootcmd run owrt_boot
 
   saveenv
   ```
@@ -60,7 +73,7 @@ Flashing
 
   ```
   ls -alh /tmp/lede-apm821xx-nand-mx60-initramfs-kernel.bin
-  ubimkvol /dev/ubi0 -s 5MiB -N recovery
+  ubimkvol /dev/ubi0 -s 10MiB -N recovery
   ubiupdatevol /dev/ubi0_1 /tmp/lede-apm821xx-nand-mx60-initramfs-kernel.bin
   ```
   7. Once done, you can now load up LuCI at 192.168.1.1, and use the sysupgrade option to flash the full image to the device using the sysupgrade file named `lede-apm821xx-nand-mx60-squashfs-sysupgrade.tar`. From this point on, any future updates/builds can just be flashed through LuCI.
